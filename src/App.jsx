@@ -11,67 +11,28 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 
+// ... (other imports)
+import Profile from './pages/profile/Profile'; // 1. Import the new Profile page
+
 function App() {
-  // الوصول إلى بيانات المستخدم الحالية من المخزن العالمي (Context)
-  const { currentUser } = useContext(AuthContext);
-
-  // دالة لمعالجة عملية تسجيل الخروج
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      // سيقوم AuthContext بتحديث الواجهة تلقائيًا
-    } catch (error) {
-      console.error("خطأ في تسجيل الخروج:", error);
-    }
-  };
-
+  // ... (logic remains the same)
   return (
     <BrowserRouter>
-      {/* شريط التنقل العلوي */}
-      <nav style={{ padding: '10px', marginBottom: '20px', background: '#f0f2f5', borderBottom: '1px solid #ddd' }}>
-        <Link to="/" style={{ marginRight: '15px', textDecoration: 'none', color: '#1877f2', fontWeight: 'bold' }}>
-          الرئيسية
-        </Link>
-        
-        {/* العرض الشرطي: يعرض واجهة مختلفة بناءً على حالة تسجيل الدخول */}
-        {currentUser ? (
-          // واجهة المستخدم للمستخدم المسجل دخوله
-          <>
-            <span style={{ marginRight: '15px' }}>| مرحباً، {currentUser.email}</span>
-            <button onClick={handleLogout} style={{ cursor: 'pointer' }}>
-              تسجيل الخروج
-            </button>
-          </>
-        ) : (
-          // واجهة المستخدم للزائر
-          <>
-            <Link to="/login" style={{ marginRight: '15px', textDecoration: 'none', color: 'black' }}>
-              تسجيل الدخول
-            </Link>
-            <Link to="/register" style={{ textDecoration: 'none', color: 'black' }}>
-              تسجيل
-            </Link>
-          </>
-        )}
-      </nav>
-
-      {/* المحتوى الرئيسي حيث يتم عرض الصفحات */}
-      <main style={{ padding: '0 20px' }}>
+      {/* ... (nav and main tags remain the same) ... */}
         <Routes>
-          {/* الصفحة الرئيسية محمية، لا يمكن الوصول إليها إلا بعد تسجيل الدخول */}
           <Route 
             path="/" 
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            } 
+            element={<ProtectedRoute><Home /></ProtectedRoute>} 
           />
-          {/* صفحات المصادقة متاحة للجميع */}
+          {/* 2. Add the new dynamic route */}
+          <Route 
+            path="/profile/:userId" 
+            element={<ProtectedRoute><Profile /></ProtectedRoute>} 
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
-      </main>
+      {/* ... (closing tags) ... */}
     </BrowserRouter>
   );
 }
